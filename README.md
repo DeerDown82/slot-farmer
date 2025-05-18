@@ -1,2 +1,2 @@
-# wsb-slot-farmer
+# slot-farmer
 It farms. The slots. 
