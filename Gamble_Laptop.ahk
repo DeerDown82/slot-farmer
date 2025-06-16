@@ -31,6 +31,12 @@ SendFakeClick(x, y) {
     MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
 }
 
+SendTrueEnter() {
+    DllCall("keybd_event", "UChar", 0x0D, "UChar", 0x1C, "UInt", 0, "UPtr", 0)     ; key down
+    Sleep, 40
+    DllCall("keybd_event", "UChar", 0x0D, "UChar", 0x1C, "UInt", 2, "UPtr", 0)     ; key up
+}
+
 ; === GUI ===
 Gui, Add, Text, vStatusText, Status: Not Running
 Gui, Add, Text, vCountdownText, Next Click In: N/A
@@ -72,9 +78,7 @@ RunSlotsAndFreeze() {
 	Sleep, 80
 	SendRaw, icons
 	Sleep, 150
-	SendInput, {Space}
-	Sleep, 150
-	SendInput, {Enter}
+	SendTrueEnter()
 	Sleep, 2000  ; <-- Wait for Discord to load UI
 
 
