@@ -1,5 +1,6 @@
 ﻿#Persistent
 SetTitleMatchMode, 2
+SetDefaultMouseSpeed, 0
 SendMode, Event
 CoordMode, Pixel, Screen
 CoordMode, Mouse, Screen
@@ -16,7 +17,7 @@ toggle := false
 SendRealClick(x, y) {
     DllCall("SetCursorPos", "int", x, "int", y)
     DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0)
-    Sleep, 50
+    Sleep, 10
     DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0)
 }
 
@@ -56,16 +57,12 @@ ClickLoop:
             bottomY := winY + winH
             ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
             if (ErrorLevel = 0) {
-				x := x + 36
-				y := y + 12
-				clickPos := (y << 16) | (x & 0xFFFF)
-				PostMessage, 0x201, 1, %clickPos%, , %windowTitle%  ; WM_LBUTTONDOWN
-				Sleep, 50
-				PostMessage, 0x202, 0, %clickPos%, , %windowTitle%  ; WM_LBUTTONUP
+                x := x + 36
+                y := y + 12
+                SendFakeClick(x, y)
 				execCount += 1
 				GuiControl,, ExecCountText, Executions: %execCount%
-			}
-
+            }
         }
         nextClick := A_TickCount + (interval * 1000)
     }
