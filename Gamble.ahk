@@ -60,7 +60,6 @@ ClickLoop(*) {
 	}
 }
 
-; === BUTTON HANDLERS ===
 ToggleScript(*) {
 	global isRunning, nextClick, intervalSeconds, gui
 
@@ -102,3 +101,6 @@ TestDiscordDetection(*) {
 	else
 		MsgBox("Discord not detected.")
 }
+
+; ✅ Keep the script running
+return
