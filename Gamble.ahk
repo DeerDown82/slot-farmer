@@ -56,12 +56,12 @@ ClickLoop:
             bottomY := winY + winH
             ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
             if (ErrorLevel = 0) {
-                x := x + 36
-                y := y + 12
-                SendFakeClick(x, y)
+				x := x + 36
+				y := y + 12
+				ControlClick, x%x% y%y%, %windowTitle%,,,, NA
 				execCount += 1
 				GuiControl,, ExecCountText, Executions: %execCount%
-            }
+			}
         }
         nextClick := A_TickCount + (interval * 1000)
     }
