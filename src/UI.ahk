@@ -1,31 +1,4 @@
-; === UI MANAGER ===
-; Handles all user interface elements and interactions
 
-class UI {
-    static GuiHwnd := 0
-    static StatusTextHwnd := 0
-    static CountdownHwnd := 0
-    static ExecCountHwnd := 0
-    static RespawnHwnd := 0
-    
-    ; Initialize the GUI
-    static Init() {
-        ; Create the main GUI
-        Gui, New, +HwndGuiHwnd, % Config.DefaultWindowTitle
-        this.GuiHwnd := GuiHwnd
-        
-        ; Add controls
-        Gui, Add, Text, vStatusTextHwnd, Status: Not Running
-        Gui, Add, Text, vCountdownHwnd, Next Click In: N/A
-        Gui, Add, Text, vExecCountHwnd, Executions: 0
-        Gui, Add, Text, vRespawnHwnd, Respawns: 0
-        Gui, Add, Button, gToggleScript w150 h30, Start/Stop
-        Gui, Add, Button, gTestImageSearch w150 h30, Test Image Search
-        Gui, Add, Button, gTestDiscordDetection w150 h30, Test Discord Detection
-        Gui, Add, Checkbox, vTopToggle gToggleTop, Stay on Top
-        
-        ; Set window size and show
-        Gui, Show, w%Config.GuiWidth% h%Config.GuiHeight%
         
         ; Store control Hwnds
         GuiControlGet, StatusTextHwnd, Hwnd, StatusTextHwnd
