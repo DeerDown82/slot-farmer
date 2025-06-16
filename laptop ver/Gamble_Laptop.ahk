@@ -43,6 +43,37 @@ SetTimer, ClickLoop, 50
 Return
 
 ; === LOOP ===
+RunSlotsAndFreeze() {
+    DllCall("GetCursorPos", "Int64*", origPos)
+
+    ; Open /slots
+    DllCall("SetCursorPos", "int", 620, "int", 1306)
+    Sleep, 10
+    DllCall("mouse_event", "UInt", 0x0002)
+    DllCall("mouse_event", "UInt", 0x0004)
+    Sleep, 50
+    SendInput, /slots 5000{Enter}
+    Sleep, 100
+
+    ; Open /shop icons
+    DllCall("mouse_event", "UInt", 0x0002)
+    DllCall("mouse_event", "UInt", 0x0004)
+    Sleep, 50
+    SendInput, /shop icons{Enter}
+    Sleep, 200
+
+    ; Scroll up a bit to anchor
+    DllCall("SetCursorPos", "int", 767, "int", 1052)
+    Sleep, 50
+    Loop, 2 {
+        SendInput, {WheelUp}
+        Sleep, 20
+    }
+
+    ; Return mouse
+    MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
+}
+
 ClickLoop:
     if (!toggle)
         return
@@ -59,51 +90,24 @@ ClickLoop:
             rightX := winX + winW
             bottomY := winY + winH
             ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *30 %imagePathFinal%
+
             if (ErrorLevel = 0) {
                 x := x + 36
                 y := y + 12
                 SendFakeClick(x, y)
-				execCount += 1
-				GuiControl,, ExecCountText, Executions: %execCount%
+                execCount += 1
+                GuiControl,, ExecCountText, % "Executions: " . execCount
+            } else if (ErrorLevel = 1) {
+                ; === DIALOGUE NOT FOUND — run macro automatically
+                RunSlotsAndFreeze()
             }
         }
         nextClick := A_TickCount + (interval * 1000)
     }
 Return
 
-F8::
-{
-    ; Save mouse position
-    DllCall("GetCursorPos", "Int64*", origPos)
+F8::RunSlotsAndFreeze()
 
-    ; === Click to focus and open /slots dialog
-    DllCall("SetCursorPos", "int", 620, "int", 1306)
-    Sleep, 10
-    DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0)  ; Mouse down
-    DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0)  ; Mouse up
-    Sleep, 50
-    SendInput, /slots 5000{Enter}
-    Sleep, 100
-
-    ; === Click again to reset input field
-    DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0)
-    DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0)
-    Sleep, 50
-    SendInput, /shop icons{Enter}
-    Sleep, 200
-
-    ; === Hover over a message and scroll up a little
-    DllCall("SetCursorPos", "int", 767, "int", 1052)
-    Sleep, 50
-    Loop, 2 {
-        SendInput, {WheelUp}
-        Sleep, 20
-    }
-
-    ; === Return to original mouse position
-    MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
-}
-return
 
 ; === TOGGLE ===
 ToggleScript:
