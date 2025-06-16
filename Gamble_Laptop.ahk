@@ -12,8 +12,6 @@ interval := 8
 execCount := 0
 nextClick := 0
 toggle := false
-respawnCount := 0
-lastRespawn := 0
 
 ; === REAL CLICK FUNCTION ===
 SendRealClick(x, y) {
@@ -31,17 +29,10 @@ SendFakeClick(x, y) {
     MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
 }
 
-SendTrueEnter() {
-    DllCall("keybd_event", "UChar", 0x0D, "UChar", 0x1C, "UInt", 0, "UPtr", 0)     ; key down
-    Sleep, 40
-    DllCall("keybd_event", "UChar", 0x0D, "UChar", 0x1C, "UInt", 2, "UPtr", 0)     ; key up
-}
-
 ; === GUI ===
 Gui, Add, Text, vStatusText, Status: Not Running
 Gui, Add, Text, vCountdownText, Next Click In: N/A
 Gui, Add, Text, vExecCountText, Executions: 0
-Gui, Add, Text, vRespawnText, Respawns: 0
 Gui, Add, Button, gToggleScript w150 h30, Start/Stop
 Gui, Add, Button, gTestImageSearch w150 h30, Test Image Search
 Gui, Add, Button, gTestDiscordDetection w150 h30, Test Discord Detection
@@ -52,48 +43,6 @@ SetTimer, ClickLoop, 50
 Return
 
 ; === LOOP ===
-RunSlotsAndFreeze() {
-    DllCall("GetCursorPos", "Int64*", origPos)
-
-    ; Open /slots
-    DllCall("SetCursorPos", "int", 620, "int", 1306)
-    Sleep, 10
-    DllCall("mouse_event", "UInt", 0x0002)
-    DllCall("mouse_event", "UInt", 0x0004)
-    Sleep, 50
-    SendInput, /slots 5000{Enter}
-    Sleep, 4000
-
-    ; Open /shop icons
-    DllCall("SetCursorPos", "int", 620, "int", 1306)
-	Sleep, 80
-	DllCall("mouse_event", "UInt", 0x0002)
-	DllCall("mouse_event", "UInt", 0x0004)
-	Sleep, 100
-	SendRaw, /
-	Sleep, 80
-	SendRaw, shop
-	Sleep, 100
-	Send, {Space}
-	Sleep, 80
-	SendRaw, icons
-	Sleep, 150
-	SendTrueEnter()
-	Sleep, 2000  ; <-- Wait for Discord to load UI
-
-
-    ; Scroll up a bit to anchor
-    DllCall("SetCursorPos", "int", 767, "int", 1052)
-	Sleep, 80
-	Loop, 2 {
-		SendInput, {WheelUp}
-		Sleep, 30
-	}
-
-    ; Return mouse
-    MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
-}
-
 ClickLoop:
     if (!toggle)
         return
@@ -109,29 +58,18 @@ ClickLoop:
             imagePathFinal := imagePath
             rightX := winX + winW
             bottomY := winY + winH
-            ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *30 %imagePathFinal%
-
+            ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
             if (ErrorLevel = 0) {
                 x := x + 36
                 y := y + 12
                 SendFakeClick(x, y)
-                execCount += 1
-                GuiControl,, ExecCountText, % "Executions: " . execCount
-            } else if (ErrorLevel = 1) {
-				if (A_TickCount - lastRespawn > 15000) {
-					RunSlotsAndFreeze()
-					lastRespawn := A_TickCount
-					respawnCount += 1
-					GuiControl,, RespawnText, % "Respawns: " . respawnCount
-				}
-			}
+				execCount += 1
+				GuiControl,, ExecCountText, Executions: %execCount%
+            }
         }
         nextClick := A_TickCount + (interval * 1000)
     }
 Return
-
-F8::RunSlotsAndFreeze()
-
 
 ; === TOGGLE ===
 ToggleScript:
