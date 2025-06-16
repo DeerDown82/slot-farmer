@@ -47,15 +47,15 @@ class ImageManager {
         return false
     }
     
-    ; Send a real click at the specified coordinates
+    ; Real click function - moves cursor and performs click
     static SendRealClick(x, y) {
         DllCall("SetCursorPos", "int", x, "int", y)
         DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0)
-        Sleep, % Config.ClickDelay
+        Sleep, 10
         DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0)
     }
     
-    ; Send a fake click (moves cursor back to original position)
+    ; Fake click - moves cursor, clicks, and returns to original position
     static SendFakeClick(x, y) {
         DllCall("GetCursorPos", "Int64*", origPos)
         DllCall("SetCursorPos", "int", x, "int", y)

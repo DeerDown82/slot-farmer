@@ -20,7 +20,7 @@ class Config {
     static UIUpdateInterval := 50
     
     ; Image paths
-    static ImageDir := A_ScriptDir "\..\images"
+    static ImageDir := "C:\Users\k1ngzly\Documents\AutoHotkey"
     static ButtonImage := "button.bmp"
     
     ; UI Defaults
@@ -38,14 +38,14 @@ class Config {
     static ImageVariation := 30  ; 0-255, higher allows more variation in image matching
     
     ; Get full image path
-    static GetImagePath(imageName) {
+    GetImagePath(imageName) {
         return this.ImageDir "\" imageName
     }
 }
 
 ; === GLOBAL VARIABLES ===
 ; These are kept in the global scope for backward compatibility
-global g_Config := Config
+global g_Config := new Config()
 global g_Toggle := false
 global g_ExecCount := 0
 global g_RespawnCount := 0

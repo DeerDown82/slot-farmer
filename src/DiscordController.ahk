@@ -1,88 +1,45 @@
-; === DISCORD CONTROLLER ===
-; Handles all Discord-specific automation
+; === DISCORD SLOTS FUNCTIONALITY ===
+; Original RunSlotsAndFreeze function from Gamble.ahk
 
-class DiscordController {
-    ; Run the slots command and handle the UI
-    static RunSlotsAndFreeze() {
-        ; Save original cursor position
-        DllCall("GetCursorPos", "Int64*", origPos)
-        
-        ; Open chat input
-        this.FocusChatInput()
-        
-        ; Send slots command
-        this.SendSlotsCommand()
-        
-        ; Open shop icons
-        this.OpenShopIcons()
-        
-        ; Scroll up a bit to anchor
-        this.ScrollUp()
-        
-        ; Return mouse to original position
-        MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
-    }
-    
-    ; Focus the chat input area
-    static FocusChatInput() {
-        ; This is a placeholder - actual implementation will depend on Discord's UI
-        ; We'll need to find a better way to locate the chat input
-        Click, 620, 1306
-        Sleep, % Config.CommandDelay
-    }
-    
-    ; Send the slots command
-    static SendSlotsCommand() {
-        SendInput, % Config.SlotsCommand "{Enter}"
-        Sleep, 4000  ; Wait for slots to appear
-    }
-    
-    ; Open shop icons
-    static OpenShopIcons() {
-        this.FocusChatInput()
-        
-        ; Type /shop icons
-        SendRaw, /
-        Sleep, % Config.CommandDelay
-        SendRaw, shop
-        Sleep, % Config.CommandDelay
-        Send, {Space}
-        Sleep, % Config.CommandDelay
-        SendRaw, icons
-        Sleep, % Config.CommandDelay
-        SendInput, {Space}
-        Sleep, % Config.CommandDelay
-        SendInput, {Enter}
-        Sleep, 2000  ; Wait for UI to update
-    }
-    
-    ; Scroll up in the chat
-    static ScrollUp() {
-        ; Move to a position where scrolling will work
-        Click, 767, 1052
-        Sleep, % Config.CommandDelay
-        
-        ; Scroll up
-        Loop, 2 {
-            SendInput, {WheelUp}
-            Sleep, 30
-        }
-    }
-    
-    ; Check if the play again button is visible
-    static IsPlayAgainButtonVisible() {
-        return ImageManager.SearchImage(Config.ButtonImage).found
-    }
-    
-    ; Click the play again button
-    static ClickPlayAgain() {
-        ; Click at the button's center with a small offset if needed
-        return ImageManager.ClickImage(Config.ButtonImage, 36, 12)
-    }
-}
+RunSlotsAndFreeze() {
+    DllCall("GetCursorPos", "Int64*", origPos)
 
-; Include guard
-if (A_LineFile = A_ScriptFullPath) {
-    MsgBox % "DiscordController module loaded. This is a support file and should be included by the main script."
-    ExitApp
+    ; Open /slots
+    DllCall("SetCursorPos", "int", 620, "int", 1306)
+    Sleep, 10
+    DllCall("mouse_event", "UInt", 0x0002)
+    DllCall("mouse_event", "UInt", 0x0004)
+    Sleep, 50
+    SendInput, /slots 5000{Enter}
+    Sleep, 4000
+
+    ; Open /shop icons
+    DllCall("SetCursorPos", "int", 620, "int", 1306)
+    Sleep, 80
+    DllCall("mouse_event", "UInt", 0x0002)
+    DllCall("mouse_event", "UInt", 0x0004)
+    Sleep, 100
+    SendRaw, /
+    Sleep, 80
+    SendRaw, shop
+    Sleep, 100
+    Send, {Space}
+    Sleep, 80
+    SendRaw, icons
+    Sleep, 150
+    SendInput, {Space}
+    Sleep, 150
+    SendInput, {Enter}
+    Sleep, 2000  ; Wait for Discord to load UI
+
+    ; Scroll up a bit to anchor
+    DllCall("SetCursorPos", "int", 767, "int", 1052)
+    Sleep, 80
+    Loop, 2 {
+        SendInput, {WheelUp}
+        Sleep, 30
+    }
+
+    ; Return mouse
+    MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
 }

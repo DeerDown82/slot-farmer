@@ -3,10 +3,24 @@
 ; Modular version with resolution independence
 
 ; Include required libraries
+#SingleInstance Force
+#NoEnv
+SetWorkingDir %A_ScriptDir%
+SendMode Event
+SetTitleMatchMode 2
+
 #Include src\Config.ahk
 #Include src\ImageManager.ahk
 #Include src\DiscordController.ahk
 #Include src\UI.ahk
+#Include utils\DebugTools.ahk
+
+; Initialize global variables
+global g_Toggle := false
+global g_NextClick := 0
+global g_ExecCount := 0
+global g_RespawnCount := 0
+global g_LastRespawn := 0
 
 ; Initialize the application
 Initialize()
@@ -63,6 +77,16 @@ return
 ; === HOTKEYS ===
 F8::DiscordController.RunSlotsAndFreeze()
 ^!r::Reload  ; Ctrl+Alt+R to reload the script
+F6::ToggleScript()
+F7::
+    MsgBox, % "Debug Info:`n`n"
+           . "Executions: " g_ExecCount "`n"
+           . "Respawns: " g_RespawnCount "`n"
+           . "Image Path: " Config.ImageDir "`n"
+           . "Window Title: " Config.WindowTitle "`n"
+           . "Interval: " Config.DefaultInterval "ms"
+return
+^!x::ExitApp  ; Ctrl+Alt+X to exit
 
 ; === GUI EVENTS ===
 ; These are handled by the UI class
@@ -73,3 +97,24 @@ ExitHandler(ExitReason, ExitCode) {
     ; Clean up resources if needed
     return 0  ; Call ExitApp
 }
+
+; Function to check if Discord is active
+IsDiscordActive() {
+    return WinExist(Config.WindowTitle)
+}
+
+; Function to toggle the script
+ToggleScript() {
+    global g_Toggle, g_NextClick
+    g_Toggle := !g_Toggle
+    if (g_Toggle) {
+        g_NextClick := A_TickCount + (Config.DefaultInterval * 1000)
+        UI.UpdateStatus("Running")
+    } else {
+        UI.UpdateStatus("Not Running")
+        UI.UpdateCountdown("N/A")
+    }
+}
+
+; Show a message when the script loads
+MsgBox, 64, Slot Farmer, Slot Farmer is running!`n`nPress F6 to start/stop`nPress F7 for debug info`nCtrl+Alt+X to exit
