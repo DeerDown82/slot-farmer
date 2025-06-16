@@ -73,18 +73,37 @@ Return
 
 F8::
 {
+    ; Save mouse position
     DllCall("GetCursorPos", "Int64*", origPos)
+
+    ; === Click to focus and open /slots dialog
     DllCall("SetCursorPos", "int", 620, "int", 1306)
     Sleep, 10
     DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0)  ; Mouse down
     DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0)  ; Mouse up
     Sleep, 50
     SendInput, /slots 5000{Enter}
-    Sleep, 10
+    Sleep, 100
+
+    ; === Click again to reset input field
+    DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0)
+    DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0)
+    Sleep, 50
+    SendInput, /shop icons{Enter}
+    Sleep, 200
+
+    ; === Hover over a message and scroll up a little
+    DllCall("SetCursorPos", "int", 767, "int", 1052)
+    Sleep, 50
+    Loop, 2 {
+        SendInput, {WheelUp}
+        Sleep, 20
+    }
+
+    ; === Return to original mouse position
     MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
 }
 return
-
 
 ; === TOGGLE ===
 ToggleScript:
