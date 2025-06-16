@@ -69,17 +69,18 @@ RunSlotsAndFreeze() {
 	Send, {Space}
 	Sleep, 80
 	SendRaw, icons
-	Sleep, 100
+	Sleep, 150
 	Send, {Enter}
+	Sleep, 2000  ; <-- Wait for Discord to load UI
 
 
     ; Scroll up a bit to anchor
     DllCall("SetCursorPos", "int", 767, "int", 1052)
-    Sleep, 50
-    Loop, 2 {
-        SendInput, {WheelUp}
-        Sleep, 20
-    }
+	Sleep, 80
+	Loop, 2 {
+		SendInput, {WheelUp}
+		Sleep, 30
+	}
 
     ; Return mouse
     MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
