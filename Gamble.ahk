@@ -5,11 +5,6 @@ CoordMode, Mouse, Screen
 
 ; ✅ CONFIGURATION
 imagePath := "C:\Users\k1ngzly\Documents\AutoHotkey\button.bmp" ; Use BMP format!
-; Ensure the file exists before we try to use it
-if !FileExist(imagePath) {
-    MsgBox, ⚠️ Image file not found at:`n%imagePath%`nMake sure the file exists and the path is correct.
-    ExitApp
-}
 windowTitle := "ahk_exe Discord.exe"
 interval := 10 ; seconds between clicks
 
@@ -56,18 +51,18 @@ ClickLoop:
         if (A_TickCount >= nextClick) {
             WinGetPos, winX, winY, winW, winH, %windowTitle%
             if (winW && winH) {
-                ; Search within the bounds of the Discord window
-                ImageSearch, x, y, %winX%, %winY%, % winX + winW, % winY + winH, *50 %imagePath%
+                imagePathFinal := imagePath
+                ImageSearch, x, y, %winX%, %winY%, % winX + winW, % winY + winH, *50 %imagePathFinal%
                 if (ErrorLevel = 0) {
                     ControlClick, x%x% y%y%, %windowTitle%
-                    Tooltip, Clicked "Spin Again" at %x%, %y%
+                    Tooltip, ✅ Clicked "Spin Again" at %x%, %y%
                 } else if (ErrorLevel = 1) {
-                    Tooltip, "Spin Again" button NOT found.
+                    Tooltip, ❌ "Spin Again" button NOT found.
                 } else if (ErrorLevel = 2) {
-                    Tooltip, Error: could not read image file!
+                    Tooltip, ⚠️ Error reading image file!
                 }
             } else {
-                Tooltip, Discord window not found!
+                Tooltip, ❌ Discord window not found!
             }
             nextClick := A_TickCount + (interval * 1000)
         }
@@ -78,11 +73,12 @@ Return
 TestImageSearch:
     WinGetPos, winX, winY, winW, winH, %windowTitle%
     if (!winW || !winH) {
-        MsgBox, Discord window not found. Make sure it's visible and not minimized.
+        MsgBox, ❌ Discord window not found. Make sure it's visible and not minimized.
         Return
     }
 
-    ImageSearch, x, y, %winX%, %winY%, %winX% + %winW%, %winY% + %winH%, *50 %imagePath%
+    imagePathFinal := imagePath
+    ImageSearch, x, y, %winX%, %winY%, %winX% + %winW%, %winY% + %winH%, *50 %imagePathFinal%
     if (ErrorLevel = 0) {
         MsgBox, ✅ Image Found at X: %x% Y: %y%
     } else if (ErrorLevel = 1) {
