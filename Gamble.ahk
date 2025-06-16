@@ -37,12 +37,15 @@ ToggleScript:
     if (toggle) {
         nextClick := A_TickCount + (interval * 1000)
         GuiControl,, StatusText, Status: Running
+        GuiControl,, CountdownText, Next Click In: %interval% seconds
+        Tooltip, Bot started. Next click in %interval% seconds
     } else {
         GuiControl,, StatusText, Status: Not Running
         GuiControl,, CountdownText, Next Click In: N/A
-        Tooltip
+        Tooltip, Bot stopped.
     }
 Return
+
 
 ; === MAIN TIMER LOOP ===
 SetTimer, ClickLoop, 100
@@ -50,10 +53,17 @@ Return
 
 ClickLoop:
     if (toggle) {
-        timeLeft := Round((nextClick - A_TickCount) / 1000)
-        if (timeLeft < 0) {
-            timeLeft := 0
+        ; Make sure nextClick is initialized
+        if (!nextClick || nextClick = 0)
+        {
+            nextClick := A_TickCount + (interval * 1000)
+            GuiControl,, CountdownText, Next Click In: %interval% seconds
+            return
         }
+
+        timeLeft := Round((nextClick - A_TickCount) / 1000)
+        if (timeLeft < 0)
+            timeLeft := 0
         GuiControl,, CountdownText, Next Click In: %timeLeft% seconds
 
         if (A_TickCount >= nextClick) {
@@ -64,19 +74,20 @@ ClickLoop:
                 bottomY := winY + winH
                 ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
                 if (ErrorLevel = 0) {
-                    ; Offset to center of button (72x24)
                     x := x + 36
                     y := y + 12
                     SendRealClick(x, y)
-                    Tooltip, Clicked "Spin Again" at %x%, %y%
+                    Tooltip, Clicked at %x%, %y%
                 } else if (ErrorLevel = 1) {
-                    Tooltip, "Spin Again" button NOT found.
+                    Tooltip, Image not found.
                 } else if (ErrorLevel = 2) {
-                    Tooltip, Error reading image file!
+                    Tooltip, Image read error.
                 }
             } else {
-                Tooltip, Discord window not found!
+                Tooltip, Discord window not found.
             }
+
+            ; Reset timer for next round
             nextClick := A_TickCount + (interval * 1000)
         }
     }
