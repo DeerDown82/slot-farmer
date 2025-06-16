@@ -56,22 +56,22 @@ RunSlotsAndFreeze() {
     DllCall("mouse_event", "UInt", 0x0004)
     Sleep, 50
     SendInput, /slots 5000{Enter}
-    Sleep, 5000
+    Sleep, 4000
 
     ; Open /shop icons
     DllCall("mouse_event", "UInt", 0x0002)
     DllCall("mouse_event", "UInt", 0x0004)
     Sleep, 50
-    SendRaw, /
+	SendRaw, /
 	Sleep, 80
 	SendRaw, shop
 	Sleep, 100
-	SendRaw, {Space}
+	Send, {Space}
 	Sleep, 80
 	SendRaw, icons
 	Sleep, 100
 	Send, {Enter}
-    Sleep, 2000
+
 
     ; Scroll up a bit to anchor
     DllCall("SetCursorPos", "int", 767, "int", 1052)
