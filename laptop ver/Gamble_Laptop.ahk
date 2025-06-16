@@ -58,7 +58,7 @@ ClickLoop:
             imagePathFinal := imagePath
             rightX := winX + winW
             bottomY := winY + winH
-            ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
+            ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *30 %imagePathFinal%
             if (ErrorLevel = 0) {
                 x := x + 36
                 y := y + 12
