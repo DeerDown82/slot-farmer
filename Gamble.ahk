@@ -58,10 +58,14 @@ ClickLoop:
             if (ErrorLevel = 0) {
 				x := x + 36
 				y := y + 12
-				ControlClick, x%x% y%y%, %windowTitle%,,,, NA
+				clickPos := (y << 16) | (x & 0xFFFF)
+				PostMessage, 0x201, 1, %clickPos%, , %windowTitle%  ; WM_LBUTTONDOWN
+				Sleep, 50
+				PostMessage, 0x202, 0, %clickPos%, , %windowTitle%  ; WM_LBUTTONUP
 				execCount += 1
 				GuiControl,, ExecCountText, Executions: %execCount%
 			}
+
         }
         nextClick := A_TickCount + (interval * 1000)
     }
