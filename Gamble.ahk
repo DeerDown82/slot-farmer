@@ -4,7 +4,7 @@ CoordMode, Pixel, Screen
 CoordMode, Mouse, Screen
 
 ; ✅ CONFIGURATION
-imagePath := "C:\Users\k1ngzly\Documents\AutoHotkey\button.bmp" ; Use BMP format!
+imagePath := "C:\Users\k1ngzly\Documents\AutoHotkey\button.bmp"
 windowTitle := "ahk_exe Discord.exe"
 interval := 10 ; seconds between clicks
 
@@ -52,7 +52,9 @@ ClickLoop:
             WinGetPos, winX, winY, winW, winH, %windowTitle%
             if (winW && winH) {
                 imagePathFinal := imagePath
-                ImageSearch, x, y, %winX%, %winY%, % winX + winW, % winY + winH, *50 %imagePathFinal%
+                rightX := winX + winW
+                bottomY := winY + winH
+                ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
                 if (ErrorLevel = 0) {
                     ControlClick, x%x% y%y%, %windowTitle%
                     Tooltip, ✅ Clicked "Spin Again" at %x%, %y%
@@ -78,7 +80,9 @@ TestImageSearch:
     }
 
     imagePathFinal := imagePath
-    ImageSearch, x, y, %winX%, %winY%, %winX% + %winW%, %winY% + %winH%, *50 %imagePathFinal%
+    rightX := winX + winW
+    bottomY := winY + winH
+    ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
     if (ErrorLevel = 0) {
         MsgBox, ✅ Image Found at X: %x% Y: %y%
     } else if (ErrorLevel = 1) {
