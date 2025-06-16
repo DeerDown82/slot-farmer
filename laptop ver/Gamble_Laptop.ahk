@@ -12,6 +12,8 @@ interval := 8
 execCount := 0
 nextClick := 0
 toggle := false
+respawnCount := 0
+lastRespawn := 0
 
 ; === REAL CLICK FUNCTION ===
 SendRealClick(x, y) {
@@ -33,6 +35,7 @@ SendFakeClick(x, y) {
 Gui, Add, Text, vStatusText, Status: Not Running
 Gui, Add, Text, vCountdownText, Next Click In: N/A
 Gui, Add, Text, vExecCountText, Executions: 0
+Gui, Add, Text, vRespawnText, Respawns: 0
 Gui, Add, Button, gToggleScript w150 h30, Start/Stop
 Gui, Add, Button, gTestImageSearch w150 h30, Test Image Search
 Gui, Add, Button, gTestDiscordDetection w150 h30, Test Discord Detection
@@ -53,7 +56,7 @@ RunSlotsAndFreeze() {
     DllCall("mouse_event", "UInt", 0x0004)
     Sleep, 50
     SendInput, /slots 5000{Enter}
-    Sleep, 100
+    Sleep, 5000
 
     ; Open /shop icons
     DllCall("mouse_event", "UInt", 0x0002)
@@ -98,9 +101,13 @@ ClickLoop:
                 execCount += 1
                 GuiControl,, ExecCountText, % "Executions: " . execCount
             } else if (ErrorLevel = 1) {
-                ; === DIALOGUE NOT FOUND — run macro automatically
-                RunSlotsAndFreeze()
-            }
+				if (A_TickCount - lastRespawn > 15000) {
+					RunSlotsAndFreeze()
+					lastRespawn := A_TickCount
+					respawnCount += 1
+					GuiControl,, RespawnText, % "Respawns: " . respawnCount
+				}
+			}
         }
         nextClick := A_TickCount + (interval * 1000)
     }
