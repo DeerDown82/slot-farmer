@@ -22,9 +22,11 @@ SendRealClick(x, y) {
 }
 
 SendFakeClick(x, y) {
-    MouseGetPos, prevX, prevY
-    SendRealClick(x, y)
-    MouseMove, %prevX%, %prevY%, 0
+    DllCall("GetCursorPos", "Int64*", origPos)
+    DllCall("SetCursorPos", "int", x, "int", y)
+    DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0)
+    DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0)
+    MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
 }
 
 ; === GUI ===
@@ -36,7 +38,7 @@ Gui, Add, Button, gTestImageSearch w150 h30, Test Image Search
 Gui, Add, Button, gTestDiscordDetection w150 h30, Test Discord Detection
 Gui, Show,, Auto Clicker Status
 
-SetTimer, ClickLoop, 100
+SetTimer, ClickLoop, 50
 Return
 
 ; === LOOP ===
