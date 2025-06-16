@@ -13,7 +13,7 @@ Loop {
     if (!toggle)
         break
     ; Adjust "Discord" if needed to match the window title
-    ControlClick, x100 y200, ahk_exe Discord.exe
+    ControlClick, x371 y737, ahk_exe Discord.exe
     Sleep, 10000 ; Wait 10 seconds
 }
 return
