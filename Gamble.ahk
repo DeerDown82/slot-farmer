@@ -7,7 +7,8 @@ CoordMode, Mouse, Screen
 ; === CONFIGURATION ===
 imagePath := "C:\Users\k1ngzly\Documents\AutoHotkey\button.bmp"
 windowTitle := "ahk_exe Discord.exe"
-interval := 10
+interval := 8
+execCount := 0
 nextClick := 0
 toggle := false
 
@@ -15,13 +16,20 @@ toggle := false
 SendRealClick(x, y) {
     DllCall("SetCursorPos", "int", x, "int", y)
     DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0)
-    Sleep, 10
+    Sleep, 50
     DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0)
+}
+
+SendFakeClick(x, y) {
+    MouseGetPos, prevX, prevY
+    SendRealClick(x, y)
+    MouseMove, %prevX%, %prevY%, 0
 }
 
 ; === GUI ===
 Gui, Add, Text, vStatusText, Status: Not Running
 Gui, Add, Text, vCountdownText, Next Click In: N/A
+Gui, Add, Text, vExecCountText, Executions: 0
 Gui, Add, Button, gToggleScript w150 h30, Start/Stop
 Gui, Add, Button, gTestImageSearch w150 h30, Test Image Search
 Gui, Add, Button, gTestDiscordDetection w150 h30, Test Discord Detection
@@ -50,7 +58,9 @@ ClickLoop:
             if (ErrorLevel = 0) {
                 x := x + 36
                 y := y + 12
-                SendRealClick(x, y)
+                SendFakeClick(x, y)
+				execCount += 1
+				GuiControl,, ExecCountText, Executions: %execCount%
             }
         }
         nextClick := A_TickCount + (interval * 1000)
