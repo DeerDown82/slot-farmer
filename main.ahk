@@ -2,18 +2,22 @@
 ; Slot Farmer - Automated Discord Slots Bot
 ; Modular version with resolution independence
 
-; Include required libraries
+; Set working directory to script location
 #SingleInstance Force
 #NoEnv
+#Persistent
 SetWorkingDir %A_ScriptDir%
 SendMode Event
-SetTitleMatchMode 2
+SetTitleMatchMode, 2
+CoordMode, Pixel, Screen
+CoordMode, Mouse, Screen
 
-#Include src\Config.ahk
-#Include src\ImageManager.ahk
-#Include src\DiscordController.ahk
-#Include src\UI.ahk
-#Include utils\DebugTools.ahk
+; Include required libraries with relative paths
+#Include %A_ScriptDir%\src\Config.ahk
+#Include %A_ScriptDir%\src\ImageManager.ahk
+#Include %A_ScriptDir%\src\DiscordController.ahk
+#Include %A_ScriptDir%\src\UI.ahk
+#Include %A_ScriptDir%\utils\DebugTools.ahk
 
 ; Initialize global variables
 global g_Toggle := false
@@ -23,50 +27,34 @@ global g_RespawnCount := 0
 global g_LastRespawn := 0
 
 ; Initialize the application
-Initialize()
+InitUI()
 
-; Main timer for the auto-clicker
-SetTimer, MainLoop, % Config.UIUpdateInterval
-return
-
-; === INITIALIZATION ===
-Initialize() {
-    ; Create required directories
-    if !FileExist(Config.ImageDir)
-        FileCreateDir, % Config.ImageDir
-    
-    ; Initialize the UI
-    UI.Init()
-    
-    ; Show welcome message
-    UI.UpdateStatus("Ready")
-}
+; Set up timer for main loop
+SetTimer, MainLoop, 100
+Return
 
 ; === MAIN LOOP ===
 MainLoop:
-    if (!g_Toggle)
+    ; Check if we should run
+    if (!g_Toggle) {
         return
-    
-    ; Update countdown
-    timeLeft := Round((g_NextClick - A_TickCount) / 1000)
-    UI.UpdateCountdown(timeLeft)
+    }
     
     ; Check if it's time to click
-    if (A_TickCount >= g_NextClick) {
-        if (IsDiscordActive()) {
-            ; Try to find and click the play button
-            if (DiscordController.IsPlayAgainButtonVisible()) {
-                if (DiscordController.ClickPlayAgain()) {
-                    g_ExecCount += 1
-                    UI.UpdateExecCount(g_ExecCount)
-                }
-            } else if (A_TickCount - g_LastRespawn > Config.RespawnCooldown) {
-                ; If button not found and cooldown passed, try to respawn
-                DiscordController.RunSlotsAndFreeze()
-                g_LastRespawn := A_TickCount
-                g_RespawnCount += 1
-                UI.UpdateRespawnCount(g_RespawnCount)
+    currentTime := A_TickCount
+    if (currentTime >= g_NextClick) {
+        ; Try to find and click the play button
+        if (DiscordController.IsPlayAgainButtonVisible()) {
+            if (DiscordController.ClickPlayAgain()) {
+                g_ExecCount++
+                UI.UpdateExecCount(g_ExecCount)
             }
+        } else if (A_TickCount - g_LastRespawn > Config.RespawnCooldown) {
+            ; If button not found and cooldown passed, try to respawn
+            DiscordController.RunSlotsAndFreeze()
+            g_LastRespawn := A_TickCount
+            g_RespawnCount++
+            UI.UpdateRespawnCount(g_RespawnCount)
         }
         
         ; Schedule next click

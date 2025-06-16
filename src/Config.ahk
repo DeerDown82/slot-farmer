@@ -1,46 +1,47 @@
 ; === GLOBAL CONFIGURATION ===
-#Warn All, Off
 #SingleInstance Force
 #Persistent
 SetTitleMatchMode, 2
 SetDefaultMouseSpeed, 0
-SendMode, Event
+SendMode Event
 CoordMode, Pixel, Screen
 CoordMode, Mouse, Screen
 
-; === APPLICATION CONSTANTS ===
-class Config {
-    ; Discord window settings
-    static DiscordWindowTitle := "ahk_exe Discord.exe"
-    
-    ; Timing settings (in milliseconds)
-    static ClickDelay := 10
-    static DefaultInterval := 8
-    static CommandDelay := 100
-    static UIUpdateInterval := 50
-    
-    ; Image paths
-    static ImageDir := "C:\Users\k1ngzly\Documents\AutoHotkey"
-    static ButtonImage := "button.bmp"
-    
-    ; UI Defaults
-    static DefaultWindowTitle := "Auto Clicker Status"
-    static GuiWidth := 300
-    static GuiHeight := 250
-    
-    ; Slots command
-    static SlotsCommand := "/slots 5000"
-    
-    ; Respawn cooldown (15 seconds)
-    static RespawnCooldown := 15000
-    
-    ; Image search settings
-    static ImageVariation := 30  ; 0-255, higher allows more variation in image matching
-    
-    ; Get full image path
-    GetImagePath(imageName) {
-        return this.ImageDir "\" imageName
-    }
+; === GLOBAL VARIABLES ===
+; Discord window settings
+global DiscordWindowTitle := "ahk_exe Discord.exe"
+
+; Timing settings (in milliseconds)
+global ClickDelay := 10
+global DefaultInterval := 8
+global CommandDelay := 100
+global UIUpdateInterval := 50
+
+; Image paths
+global ImageDir := A_ScriptDir "\..\images\main"
+global ButtonImage := "button_v2.bmp"
+
+; UI Defaults
+global DefaultWindowTitle := "Auto Clicker Status"
+global GuiWidth := 300
+global GuiHeight := 250
+
+; Slots command
+global SlotsCommand := "/slots 5000"
+
+; Respawn cooldown (15 seconds)
+global RespawnCooldown := 15000
+
+; Image search settings
+global ImageVariation := 30  ; 0-255, higher allows more variation in image matching
+
+; === FUNCTIONS ===
+GetFullImagePath() {
+    return ImageDir "\" ButtonImage
+}
+
+GetImagePath(imageName) {
+    return ImageDir "\" imageName
 }
 
 ; === GLOBAL VARIABLES ===
