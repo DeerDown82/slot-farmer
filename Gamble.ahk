@@ -40,14 +40,12 @@ Return
 
 ClickLoop:
     if (toggle) {
-        ; Update countdown display
         timeLeft := Round((nextClick - A_TickCount) / 1000)
         if (timeLeft < 0) {
             timeLeft := 0
         }
         GuiControl,, CountdownText, Next Click In: %timeLeft% seconds
 
-        ; Time to click?
         if (A_TickCount >= nextClick) {
             WinGetPos, winX, winY, winW, winH, %windowTitle%
             if (winW && winH) {
@@ -56,7 +54,11 @@ ClickLoop:
                 bottomY := winY + winH
                 ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
                 if (ErrorLevel = 0) {
-                    ControlClick, x%x% y%y%, %windowTitle%
+                    ; ✅ Mouse-based click fallback
+                    MouseGetPos, prevX, prevY
+                    MouseMove, %x%, %y%, 0
+                    Click
+                    MouseMove, %prevX%, %prevY%, 0
                     Tooltip, ✅ Clicked "Spin Again" at %x%, %y%
                 } else if (ErrorLevel = 1) {
                     Tooltip, ❌ "Spin Again" button NOT found.
@@ -100,6 +102,12 @@ TestDiscordDetection:
         MsgBox, ❌ Discord not detected. Make sure it's open and visible.
     }
 Return
+
+F9::
+MouseMove, 100, 100, 0
+Click
+return
+
 
 ; ✅ CLOSE GUI EXITS SCRIPT
 GuiClose:
