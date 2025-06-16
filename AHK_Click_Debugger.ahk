@@ -13,13 +13,9 @@ SendRealClick(x, y)
 {
     ; Move the cursor to the specified position
     DllCall("SetCursorPos", "int", x, "int", y)
-
-    ; Mouse down (left button)
-    DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0)
+    DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0) ; Mouse down
     Sleep, 50
-
-    ; Mouse up (left button)
-    DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0)
+    DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0) ; Mouse up
 }
 
 ; === F1: ImageSearch + Real Click Test ===
@@ -38,11 +34,14 @@ F1::
     ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
 
     if (ErrorLevel = 0) {
-        MsgBox, ✅ Image Found at:`nX: %x%`nY: %y%`n`nDiscord Window:`n%winX%,%winY% to %rightX%,%bottomY%
-        
-        ; 🔥 Real hardware-level click
+        ; ✅ Offset to center of the button (72x24)
+        x := x + 36
+        y := y + 12
+
+        MsgBox, ✅ Image Found at:`nTop-Left: %x%-36, %y%-12`nClicking Center at: %x%, %y%`n`nDiscord Window:`n%winX%,%winY% to %rightX%,%bottomY%
+
         SendRealClick(x, y)
-        MsgBox, 🖱️ Real Click Sent at %x%, %y%`nDid it work?
+        MsgBox, 🖱️ Real Click Sent at %x%, %y%`nDid it click properly?
 
     } else if (ErrorLevel = 1) {
         MsgBox, ❌ Image not found inside Discord window.
