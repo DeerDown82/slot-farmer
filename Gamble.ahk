@@ -36,7 +36,7 @@ Gui, Add, Text, vExecCountText, Executions: 0
 Gui, Add, Button, gToggleScript w150 h30, Start/Stop
 Gui, Add, Button, gTestImageSearch w150 h30, Test Image Search
 Gui, Add, Button, gTestDiscordDetection w150 h30, Test Discord Detection
-Gui, +AlwaysOnTop
+Gui, Add, Checkbox, vTopToggle gToggleTop, Stay on Top
 Gui, Show,, Auto Clicker Status
 
 SetTimer, ClickLoop, 50
@@ -82,6 +82,15 @@ ToggleScript:
         GuiControl,, CountdownText, Next Click In: N/A
     }
 Return
+
+ToggleTop:
+    Gui, Submit, NoHide
+    if (TopToggle)
+        Gui, +AlwaysOnTop
+    else
+        Gui, -AlwaysOnTop
+Return
+
 
 ; === TEST IMAGE BUTTON ===
 TestImageSearch:
