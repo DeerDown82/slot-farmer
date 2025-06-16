@@ -1,14 +1,24 @@
 ﻿#Persistent
 SetTitleMatchMode, 2
+SendMode, Event
 CoordMode, Pixel, Screen
 CoordMode, Mouse, Screen
 
-; ✅ CONFIGURATION
+; === CONFIGURATION ===
 imagePath := "C:\Users\k1ngzly\Documents\AutoHotkey\button.bmp"
 windowTitle := "ahk_exe Discord.exe"
 interval := 10 ; seconds between clicks
 
-; ✅ GUI SETUP
+; === FUNCTION: Real Hardware-Level Click ===
+SendRealClick(x, y)
+{
+    DllCall("SetCursorPos", "int", x, "int", y)
+    DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0) ; Mouse down
+    Sleep, 50
+    DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0, "UPtr", 0) ; Mouse up
+}
+
+; === GUI SETUP ===
 Gui, Add, Text, vStatusText, Status: Not Running
 Gui, Add, Text, vCountdownText, Next Click In: N/A
 Gui, Add, Button, gToggleScript w150 h30, Start/Stop
@@ -21,7 +31,7 @@ nextClick := 0
 
 Return
 
-; ✅ TOGGLE START/STOP
+; === TOGGLE START/STOP ===
 ToggleScript:
     toggle := !toggle
     if (toggle) {
@@ -34,7 +44,7 @@ ToggleScript:
     }
 Return
 
-; ✅ MAIN TIMER LOOP
+; === MAIN TIMER LOOP ===
 SetTimer, ClickLoop, 100
 Return
 
@@ -54,30 +64,29 @@ ClickLoop:
                 bottomY := winY + winH
                 ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
                 if (ErrorLevel = 0) {
-                    ; ✅ Mouse-based click fallback
-                    MouseGetPos, prevX, prevY
-                    MouseMove, %x%, %y%, 0
-                    Click
-                    MouseMove, %prevX%, %prevY%, 0
-                    Tooltip, ✅ Clicked "Spin Again" at %x%, %y%
+                    ; Offset to center of button (72x24)
+                    x := x + 36
+                    y := y + 12
+                    SendRealClick(x, y)
+                    Tooltip, Clicked "Spin Again" at %x%, %y%
                 } else if (ErrorLevel = 1) {
-                    Tooltip, ❌ "Spin Again" button NOT found.
+                    Tooltip, "Spin Again" button NOT found.
                 } else if (ErrorLevel = 2) {
-                    Tooltip, ⚠️ Error reading image file!
+                    Tooltip, Error reading image file!
                 }
             } else {
-                Tooltip, ❌ Discord window not found!
+                Tooltip, Discord window not found!
             }
             nextClick := A_TickCount + (interval * 1000)
         }
     }
 Return
 
-; ✅ TEST IMAGE SEARCH BUTTON
+; === TEST IMAGE SEARCH BUTTON ===
 TestImageSearch:
     WinGetPos, winX, winY, winW, winH, %windowTitle%
     if (!winW || !winH) {
-        MsgBox, ❌ Discord window not found. Make sure it's visible and not minimized.
+        MsgBox, Discord window not found. Make sure it's visible and not minimized.
         Return
     }
 
@@ -86,29 +95,31 @@ TestImageSearch:
     bottomY := winY + winH
     ImageSearch, x, y, %winX%, %winY%, %rightX%, %bottomY%, *50 %imagePathFinal%
     if (ErrorLevel = 0) {
-        MsgBox, ✅ Image Found at X: %x% Y: %y%
+        x_center := x + 36
+        y_center := y + 12
+        MsgBox, Image Found at:`nTop-Left: %x%, %y%`nClick Center: %x_center%, %y_center%
     } else if (ErrorLevel = 1) {
-        MsgBox, ❌ Image Not Found (ErrorLevel 1)
+        MsgBox, Image Not Found (ErrorLevel 1)
     } else if (ErrorLevel = 2) {
-        MsgBox, ⚠️ Error Reading Image File (ErrorLevel 2)
+        MsgBox, Error Reading Image File (ErrorLevel 2)
     }
 Return
 
-; ✅ TEST DISCORD DETECTION BUTTON
+; === TEST DISCORD DETECTION BUTTON ===
 TestDiscordDetection:
     if WinExist(windowTitle) {
-        MsgBox, ✅ Discord detected and ready.
+        MsgBox, Discord detected and ready.
     } else {
-        MsgBox, ❌ Discord not detected. Make sure it's open and visible.
+        MsgBox, Discord not detected. Make sure it's open and visible.
     }
 Return
 
+; === DEBUG HOTKEY: TEST CLICK ===
 F9::
 MouseMove, 100, 100, 0
 Click
 return
 
-
-; ✅ CLOSE GUI EXITS SCRIPT
+; === CLOSE GUI EXITS SCRIPT ===
 GuiClose:
 ExitApp
