@@ -5,6 +5,11 @@ CoordMode, Mouse, Screen
 
 ; ✅ CONFIGURATION
 imagePath := "C:\Users\k1ngzly\Documents\AutoHotkey\button.bmp" ; Use BMP format!
+; Ensure the file exists before we try to use it
+if !FileExist(imagePath) {
+    MsgBox, ⚠️ Image file not found at:`n%imagePath%`nMake sure the file exists and the path is correct.
+    ExitApp
+}
 windowTitle := "ahk_exe Discord.exe"
 interval := 10 ; seconds between clicks
 
