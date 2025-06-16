@@ -59,9 +59,11 @@ RunSlotsAndFreeze() {
     Sleep, 4000
 
     ; Open /shop icons
-    DllCall("mouse_event", "UInt", 0x0002)
-    DllCall("mouse_event", "UInt", 0x0004)
-    Sleep, 50
+    DllCall("SetCursorPos", "int", 620, "int", 1306)
+	Sleep, 80
+	DllCall("mouse_event", "UInt", 0x0002)
+	DllCall("mouse_event", "UInt", 0x0004)
+	Sleep, 100
 	SendRaw, /
 	Sleep, 80
 	SendRaw, shop
@@ -70,7 +72,9 @@ RunSlotsAndFreeze() {
 	Sleep, 80
 	SendRaw, icons
 	Sleep, 150
-	Send, {Enter}
+	SendInput, {Space}
+	Sleep, 150
+	SendInput, {Enter}
 	Sleep, 2000  ; <-- Wait for Discord to load UI
 
 
