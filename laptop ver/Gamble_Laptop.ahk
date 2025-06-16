@@ -71,6 +71,21 @@ ClickLoop:
     }
 Return
 
+F8::
+{
+    DllCall("GetCursorPos", "Int64*", origPos)
+    DllCall("SetCursorPos", "int", 620, "int", 1306)
+    Sleep, 10
+    DllCall("mouse_event", "UInt", 0x0002, "UInt", 0, "UInt", 0, "UInt", 0)  ; Mouse down
+    DllCall("mouse_event", "UInt", 0x0004, "UInt", 0, "UInt", 0, "UInt", 0)  ; Mouse up
+    Sleep, 50
+    SendInput, /slots 5000{Enter}
+    Sleep, 10
+    MouseMove, % (origPos & 0xFFFFFFFF), % (origPos >> 32), 0
+}
+return
+
+
 ; === TOGGLE ===
 ToggleScript:
     toggle := !toggle
