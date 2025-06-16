@@ -1,9 +1,11 @@
-﻿#Persistent
-SetTimer, TestLoop, 1000
-Return
+﻿#Requires AutoHotkey v2.0+
+#Persistent
+SetTimer(TestLoop, 1000)
 
-TestLoop:
-    static n := 0
-    n++
-    ToolTip, Timer has run %n% times.
-Return
+counter := 0
+
+TestLoop() {
+    global counter
+    counter += 1
+    ToolTip("Timer has run " counter " times.")
+}
