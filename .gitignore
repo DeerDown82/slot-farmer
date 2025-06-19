@@ -1,1 +1,46 @@
+# Environment and editor files
 .env
+.vscode
+.windsurf
+.idea
+
+# Python files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Python config files (contains user-specific settings)
+config.json
+
+# Captured button images (unique per user)
+Python/images/*.png
+Python/images/*.bmp
+Python/images/*.jpg
+AHK/images/*/*.png
+AHK/images/*/*.bmp
+AHK/images/*/*.jpg
+
+# Build artifacts
+*.spec
+
+# Logs
+*.log

@@ -1,89 +1,102 @@
 # Discord Slot Farmer
 
-An AutoHotkey script that automates playing slots in Discord. The bot can automatically detect and click the "Play Again" button, making it perfect for farming in-game currency while AFK.
+An automation tool for playing slots in Discord. This project automatically detects and clicks the "Spin Again" button, making it perfect for farming the "Casino Degenerate" role (awarded after 50,000 bets).
 
-## 🚀 Features
+## 🎮 How It Works
 
-- **Automated Slot Farming**: Automatically detects and clicks the "Play Again" button
-- **Smart Window Detection**: Finds and interacts with Discord window automatically
-- **Resolution Independent**: Works on different screen resolutions
-- **Debugging Tools**: Built-in tools for troubleshooting and testing
-- **User-Friendly Interface**: Simple GUI with status indicators and controls
-- **Stats Tracking**: Keeps track of executions and respawns
+The bot uses image recognition to find and click the "Spin Again" button in Discord's slot game. If the button isn't found, it automatically restarts the game by:
+1. Typing `/slots [amount]` to start a new game
+2. Using `/shop icons` to create ephemeral messages (keeps the view stable)
+3. Scrolling up to freeze the chat position
 
-## 📋 Requirements
+This ensures continuous play even when chat messages push the game out of view.
 
-- Windows 10/11
-- [AutoHotkey v2.0+](https://www.autohotkey.com/)
-- Discord Desktop Application
+## 📋 Project Structure
 
-## 🛠 Installation
+This project has two implementations:
 
-1. **Install AutoHotkey**
-   - Download and install [AutoHotkey v2.0+](https://www.autohotkey.com/)
+1. **AutoHotkey Implementation** (Original)
+   - Located in the `AHK` directory
+   - Simple, lightweight approach using AutoHotkey scripts
+   - Good for single-system use with fixed resolution
+   - Includes variants for desktop, laptop, and Firefox
 
-2. **Download the Script**
-   ```
-   git clone https://github.com/yourusername/slot-farmer.git
-   cd slot-farmer
-   ```
+2. **Python Implementation** (Enhanced)
+   - Located in the `Python` directory
+   - Resolution-independent using computer vision (OpenCV)
+   - Cross-compatible with different Discord layouts and zoom levels
+   - Includes user-friendly GUI with live stats and settings
+   - Features built-in button capture tool
 
-3. **Prepare Button Image**
-   - Take a screenshot of the "Play Again" button in Discord
-   - Save it as `button.bmp` in the `images` directory
-   - For best results, use the Windows Snipping Tool to capture just the button
+## 🤔 Which Implementation Should I Use?
 
-## 🚦 Usage
+### Choose AutoHotkey if:
+- You want a lightweight solution
+- You only need it for a single system with fixed resolution
+- You're comfortable with basic script tweaking
+- You have AutoHotkey installed or are willing to install it
 
-1. **Start the Script**
-   - Double-click `main.ahk` or right-click and select "Run with AutoHotkey"
+### Choose Python if:
+- You want to share with friends who have different screen resolutions
+- You need a user-friendly interface with visual feedback
+- You want to easily calibrate for different Discord layouts
+- You prefer a more robust solution with features like confidence-based button detection
 
-2. **Using the Interface**
-   - **Start/Stop**: Toggle the automation on/off
-   - **Test Image Search**: Verify the script can find your button
-   - **Test Discord Detection**: Check if the script can detect Discord
-   - **Stay on Top**: Keep the control window visible
+## 🚀 Quick Start
 
-3. **Debug Menu**
-   - **Show Mouse Position**: Toggle mouse coordinates display
-   - **Test Click at Mouse**: Test clicking at current mouse position
-   - **Show Debug Info**: Display detailed debugging information
+### AutoHotkey Version:
+1. Install [AutoHotkey v2.0+](https://www.autohotkey.com/)
+2. Navigate to the `AHK` directory
+3. Capture a screenshot of your "Spin Again" button using Windows Snipping Tool
+4. Save it as `button.bmp` in the appropriate images directory
+5. Run `Gamble.ahk` or the version specific to your setup (laptop/firefox)
 
-## 🎮 Hotkeys
+### Python Version:
+1. Install [Python 3.7+](https://www.python.org/downloads/)
+2. Navigate to the `Python` directory
+3. Run `build.bat` to set up the environment and build the application
+4. Run `dist\DiscordSlotFarmer.exe` or `python slot_farmer.py`
+5. Use the built-in button capture tool to create a template image
+6. Configure settings and start farming
 
-- **F8**: Manually trigger the slots sequence
-- **Ctrl+Alt+R**: Reload the script
-- **F4**: Show current mouse position (when debug tools are active)
+## 📖 Detailed Documentation
 
-## 🛠 Debugging
+Each implementation has its own detailed README:
 
-If the script isn't working:
+- [AutoHotkey Implementation](AHK/README.md)
+- [Python Implementation](Python/README.md)
 
-1. Use the "Test Image Search" button to verify button detection
-2. Check that Discord is running and visible
-3. Ensure the button image is properly captured and saved
-4. Use the debug tools to troubleshoot
+## ⚠️ Disclaimer
 
-## 📁 Project Structure
+This tool is for educational purposes only. Using automation tools may violate Discord's Terms of Service. Use at your own risk.
 
-```
-slot-farmer/
-├── images/           # Button images for detection
-├── src/              # Main source code
-│   ├── Config.ahk           # Configuration settings
-│   ├── DiscordController.ahk # Discord interaction logic
-│   ├── ImageManager.ahk      # Image detection and clicking
-│   └── UI.ahk               # User interface
-├── utils/            # Utility scripts
-│   └── DebugTools.ahk        # Debugging utilities
-├── main.ahk          # Main script (entry point)
-└── README.md         # This file
-```
+## 🔄 Project Development
+
+### Original Development (March 2025)
+- Initial AutoHotkey implementation with hardcoded coordinates
+- Created separate versions for different devices/browsers
+- Basic GUI for monitoring stats
+
+### Enhanced Version (June 2025)
+- Complete Python rewrite using computer vision
+- Resolution-independent design
+- User-friendly interface with configuration options
+- Improved reliability and adaptability
+
+## ⚙️ Technical Implementation
+
+Both versions use similar techniques with different technologies:
+- **Window Detection**: Finding the Discord window by title
+- **Image Recognition**: Locating the "Spin Again" button
+- **Automation**: Clicking buttons and typing commands
+- **Timers**: Managing intervals between actions
+
+The Python version adds:
+- **Template Matching**: More robust button detection using OpenCV
+- **Ratio-Based Positioning**: Using screen proportions instead of fixed coordinates
+- **Configuration System**: Saving/loading user preferences
+- **Visual Debugging**: Tools to verify detection accuracy
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Contributions are welcome! Feel free to submit a Pull Request with improvements.
